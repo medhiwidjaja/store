@@ -5,7 +5,7 @@ defmodule Store.ProductTest do
     alias Store.{Products, Products.Product}
 
     setup do
-      {:ok, pid} = Products.start_link(%{})
+      {:ok, _} = Products.start_link(%{})
       :ok
     end
 
