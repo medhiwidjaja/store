@@ -18,6 +18,16 @@ defmodule Store.ProductTest do
       product
     end
 
+    test "list_products/0 returns all products" do
+      product = product_fixture()
+      assert Products.list_products() == [product]
+    end
+
+    test "get_product!/1 returns the product with given code" do
+      product = product_fixture()
+      assert Products.get_product_by_code!(product.code) == product
+    end
+
     test "create_product/1 with valid data creates a product" do
       assert {:ok, %Product{} = product} = Products.create_product(@valid_attrs)
       assert product.price == 3.11
