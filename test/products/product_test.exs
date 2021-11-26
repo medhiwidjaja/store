@@ -4,6 +4,11 @@ defmodule Store.ProductTest do
   describe "products" do
     alias Store.{Products, Products.Product}
 
+    setup do
+      {:ok, pid} = Products.start_link(%{})
+      :ok
+    end
+
     @valid_attrs %{code: "GR1", name: "Green tea", price: 3.11}
     @missing_code %{name: "Green tea", price: 3.11}
     @missing_name %{code: "GR1", name: "", price: 3.11}
@@ -20,7 +25,7 @@ defmodule Store.ProductTest do
 
     test "list_products/0 returns all products" do
       product = product_fixture()
-      assert Products.list_products() == [product]
+      assert Products.list_products() == %{product.code => product}
     end
 
     test "get_product!/1 returns the product with given code" do
