@@ -15,7 +15,7 @@ defmodule Store.PricingRules.BuiltInRulesTest do
     test "doesn't apply discount if order is less than the threshold" do
       product = %Product{code: "TEA", name: "Tea", price: 2.0}
       qty = 2
-      {_, _qty, total} = Rules.bulk_discount({product, 2}, min_qty: 3, discounted_price: 1.5)
+      {_, _qty, total} = Rules.bulk_discount({product, qty}, min_qty: 3, discounted_price: 1.5)
       assert total == 4.0
     end
   end
