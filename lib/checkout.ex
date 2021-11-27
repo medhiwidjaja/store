@@ -18,6 +18,13 @@ defmodule Store.Checkout do
     GenServer.call(basket, :list)
   end
 
+  def total(basket) do
+    list(basket)
+    |> Map.values()
+    |> Enum.map(fn {p, q} -> p.price * q end)
+    |> Enum.sum()
+  end
+
   ## Server Callbacks
 
   @impl true
@@ -46,6 +53,6 @@ defmodule Store.Checkout do
 
   defp add_one(code, state) do
     product = Products.get_product_by_code!(code)
-    Map.update(state, code, {product, 1}, &{elem(&1, 0), elem(&1, 1) + 1})
+    Map.update(state, code, {product, 1}, fn item -> {elem(item, 0), elem(item, 1) + 1} end)
   end
 end
