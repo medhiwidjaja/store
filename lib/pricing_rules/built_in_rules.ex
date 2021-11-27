@@ -18,4 +18,15 @@ defmodule Store.PricingRules.BuiltInRules do
       {p, qty, qty * price}
     end
   end
+
+  def fraction_discount({%{price: price} = p, qty},
+        min_qty: min_qty,
+        multiplier: multiplier
+      ) do
+    if qty >= min_qty do
+      {%{p | price: p.price * multiplier}, qty, p.price * multiplier * qty}
+    else
+      {p, qty, qty * price}
+    end
+  end
 end
