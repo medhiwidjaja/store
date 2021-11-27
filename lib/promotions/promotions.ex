@@ -13,7 +13,7 @@ defmodule Store.Promotions do
       {:ok, promotion} ->
         :ok =
           Agent.update(@me, fn promotions ->
-            promotions |> Map.put_new(promotion.code, promotions)
+            promotions |> Map.put_new(promotion.code, promotion)
           end)
 
         {:ok, promotion}
