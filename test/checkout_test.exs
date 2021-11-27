@@ -3,6 +3,7 @@ defmodule Store.CheckoutTest do
 
   alias Store.Checkout
   alias Store.{Products, Products.Product}
+  alias Store.{Promotions}
   alias Store.{PricingRules, PricingRules.BuiltInRules}
 
   @gr1 %{code: "GR1", name: "Green tea", price: 3.11}
@@ -37,14 +38,24 @@ defmodule Store.CheckoutTest do
   describe "calculating totals" do
     setup do
       {:ok, basket} = Checkout.start_link(%{})
-      {:ok, _} = PricingRules.start_link(%{bulk: &BuiltInRules.bulk_discount/2})
-
+      {:ok, _rules} = PricingRules.start_link(%{bulk: &BuiltInRules.bulk_discount/2})
+      {:ok, _promotions} = Promotions.start_link(%{})
       Checkout.scan(basket, ["SR1", "SR1", "SR1"])
       {:ok, basket: basket}
     end
 
     test "without applying discount rules", %{basket: basket} do
       assert Checkout.total(basket) == 15.0
+    end
+
+    test "with applying discount rules", %{basket: basket} do
+      Promotions.create_promotion(%{
+        code: "SR1",
+        rule: :bulk,
+        opts: [min_qty: 3, discounted_price: 4.50]
+      })
+
+      assert Checkout.total(basket) == 13.5
     end
   end
 end

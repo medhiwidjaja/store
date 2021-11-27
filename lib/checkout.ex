@@ -1,6 +1,6 @@
 defmodule Store.Checkout do
   use GenServer
-  alias Store.Products
+  alias Store.{Products, Promotions, PricingRules}
 
   @me __MODULE__
 
@@ -21,7 +21,17 @@ defmodule Store.Checkout do
   def total(basket) do
     list(basket)
     |> Map.values()
-    |> Enum.map(fn {p, q} -> p.price * q end)
+    |> Enum.map(fn {p, q} ->
+      case Promotions.get_promotion(p.code) do
+        %{rule: rule, opts: opts} ->
+          func = PricingRules.get_rule(rule)
+          {_, _, total} = func.({p, q}, opts)
+          total
+
+        _ ->
+          p.price * q
+      end
+    end)
     |> Enum.sum()
   end
 
