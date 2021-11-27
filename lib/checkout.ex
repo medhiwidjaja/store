@@ -7,7 +7,7 @@ defmodule Store.Checkout do
   ## Client API
 
   def start_link(_opts \\ []) do
-    GenServer.start_link(__MODULE__, %{}, name: @me)
+    GenServer.start_link(__MODULE__, %{})
   end
 
   def scan(basket, code) do
@@ -23,6 +23,11 @@ defmodule Store.Checkout do
     |> Map.values()
     |> Enum.map(fn {p, q} ->
       case Promotions.get_promotion(p.code) do
+        %{rule: rule, opts: :empty} ->
+          func = PricingRules.get_rule(rule)
+          {_, _, total} = func.({p, q})
+          total
+
         %{rule: rule, opts: opts} ->
           func = PricingRules.get_rule(rule)
           {_, _, total} = func.({p, q}, opts)
