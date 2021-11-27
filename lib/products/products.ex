@@ -27,7 +27,7 @@ defmodule Store.Products do
     Agent.get(@me, & &1)
   end
 
-  def get_product_by_code!(code) do
+  def get_product_by_code(code) do
     list_products() |> Map.get(code)
   end
 end
