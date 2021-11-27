@@ -30,23 +30,42 @@ defmodule StoreTest do
     {:ok, cart: cart}
   end
 
-  test "case 1", %{cart: cart} do
-    Checkout.scan(cart, ["GR1", "SR1", "GR1", "GR1", "CF1"])
-    assert Checkout.total(cart) == 22.45
+  describe "testing cases " do
+    test "case 1", %{cart: cart} do
+      Checkout.scan(cart, ["GR1", "SR1", "GR1", "GR1", "CF1"])
+      assert Checkout.total(cart) == "£22.45"
+    end
+
+    test "case 2", %{cart: cart} do
+      Checkout.scan(cart, ["GR1", "GR1"])
+      assert Checkout.total(cart) == "£3.11"
+    end
+
+    test "case 3", %{cart: cart} do
+      Checkout.scan(cart, ["SR1", "SR1", "GR1", "SR1"])
+      assert Checkout.total(cart) == "£16.61"
+    end
+
+    test "case 4", %{cart: cart} do
+      Checkout.scan(cart, ["GR1", "CF1", "SR1", "CF1", "CF1"])
+      assert Checkout.total(cart) == "£30.57"
+    end
   end
 
-  test "case 2", %{cart: cart} do
-    Checkout.scan(cart, ["GR1", "GR1"])
-    assert Checkout.total(cart) == 3.11
-  end
+  describe "testing cases in reverse order should have same results" do
+    test "case 1 reversed", %{cart: cart} do
+      Checkout.scan(cart, Enum.reverse(["GR1", "SR1", "GR1", "GR1", "CF1"]))
+      assert Checkout.total(cart) == "£22.45"
+    end
 
-  test "case 3", %{cart: cart} do
-    Checkout.scan(cart, ["SR1", "SR1", "GR1", "SR1"])
-    assert Checkout.total(cart) == 16.61
-  end
+    test "case 3 reversed", %{cart: cart} do
+      Checkout.scan(cart, Enum.reverse(["SR1", "SR1", "GR1", "SR1"]))
+      assert Checkout.total(cart) == "£16.61"
+    end
 
-  test "case 4", %{cart: cart} do
-    Checkout.scan(cart, ["GR1", "CF1", "SR1", "CF1", "CF1"])
-    assert Checkout.total(cart) == 30.57
+    test "case 4 reversed", %{cart: cart} do
+      Checkout.scan(cart, Enum.reverse(["GR1", "CF1", "SR1", "CF1", "CF1"]))
+      assert Checkout.total(cart) == "£30.57"
+    end
   end
 end

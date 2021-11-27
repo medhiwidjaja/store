@@ -45,7 +45,7 @@ defmodule Store.CheckoutTest do
     end
 
     test "without applying discount rules", %{basket: basket} do
-      assert Checkout.total(basket) == 15.0
+      assert Checkout.total(basket) == "£15.00"
     end
 
     test "with applying discount rules", %{basket: basket} do
@@ -55,7 +55,7 @@ defmodule Store.CheckoutTest do
         opts: [min_qty: 3, discounted_price: 4.50]
       })
 
-      assert Checkout.total(basket) == 13.5
+      assert Checkout.total(basket) == "£13.50"
     end
   end
 end

@@ -38,6 +38,7 @@ defmodule Store.Checkout do
       end
     end)
     |> Enum.sum()
+    |> format_pound()
   end
 
   ## Server Callbacks
@@ -67,7 +68,11 @@ defmodule Store.Checkout do
   ## Helper functions
 
   defp add_one(code, state) do
-    product = Products.get_product_by_code!(code)
+    product = Products.get_product_by_code(code)
     Map.update(state, code, {product, 1}, fn item -> {elem(item, 0), elem(item, 1) + 1} end)
+  end
+
+  defp format_pound(num) do
+    "£#{:io_lib.format("~.2f", [num])}"
   end
 end
