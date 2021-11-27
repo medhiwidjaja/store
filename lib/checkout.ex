@@ -2,8 +2,6 @@ defmodule Store.Checkout do
   use GenServer
   alias Store.{Products, Promotions, PricingRules}
 
-  @me __MODULE__
-
   ## Client API
 
   def start_link(_opts \\ []) do

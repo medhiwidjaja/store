@@ -2,8 +2,8 @@ defmodule Store.CheckoutTest do
   use ExUnit.Case
 
   alias Store.Checkout
-  alias Store.{Products, Products.Product}
-  alias Store.{Promotions}
+  alias Store.Products
+  alias Store.Promotions
   alias Store.{PricingRules, PricingRules.BuiltInRules}
 
   @gr1 %{code: "GR1", name: "Green tea", price: 3.11}
