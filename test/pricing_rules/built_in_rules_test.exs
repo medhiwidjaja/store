@@ -35,4 +35,13 @@ defmodule Store.PricingRules.BuiltInRulesTest do
       assert total == 4.0
     end
   end
+
+  describe "buy one get one discount" do
+    test "applies buy one get one discount on bulk order" do
+      product = %Product{code: "TEA", name: "Tea", price: 2.0}
+      qty = 4
+      {_, _qty, total} = Rules.buy_one_get_one({product, qty})
+      assert total == 4.0
+    end
+  end
 end
