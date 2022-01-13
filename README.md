@@ -1,4 +1,6 @@
 # Store
+[![Elixir CI Status](https://github.com/medhiwidjaja/store/workflows/Elixir%20CI/badge.svg)](https://github.com/medhiwidjaja/store/actions)
+[![codecov](https://codecov.io/gh/medhiwidjaja/store/branch/master/graph/badge.svg?token=4JLRU3B62W)](https://codecov.io/gh/medhiwidjaja/store)
 
 A simple checkout system that calculates the cost of a basket and applies
 any special discounts or pricing rules.
