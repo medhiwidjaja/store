@@ -34,9 +34,6 @@ jobs:
     - name: Run tests
       run: mix test
 
-    - name: Run Dialyzer
-      run: mix dialyzer
-
     - name: Build Code Coverage Report
       run: mix coveralls.json
 
