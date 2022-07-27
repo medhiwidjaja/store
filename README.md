@@ -5,7 +5,7 @@
 A simple checkout system that calculates the cost of a basket and applies
 any special discounts or pricing rules.
 
-You can create new pricing rules by creating a functiom in Elixir and register
+You can create new pricing rules by creating a function in Elixir and register
 them into the system.
 
 You can then apply a pricing rule for a product.
@@ -26,7 +26,7 @@ This package has no external dependencies.
 
 ## Usage
 
-The system can be run from a REPL such as `iex` or you can include the package as a
+The system can be run from an `iex` console or you can include the package as a
 library in a different project.
 
 First setup your products and start the `Products` process. Here it is initialized with
