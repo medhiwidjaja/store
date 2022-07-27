@@ -26,10 +26,10 @@ This package has no external dependencies.
 
 ## Usage
 
-The system can be run from a REPL such as iex or you can include the package as a
+The system can be run from a REPL such as `iex` or you can include the package as a
 library in a different project.
 
-First setup your products and start the Products process. Here it is initialized with
+First setup your products and start the `Products` process. Here it is initialized with
 some products.
 
 Define some aliases:
@@ -46,8 +46,8 @@ Define some aliases:
   Products.start_link(%{gr1.code => gr1, sr1.code => sr1, cf1.code => cf1})
 ```
 
-And then start PricingRules. Some built-in rules are included that can be
-used in the initialization of the PricingRules process:
+And then start `PricingRules`. Some built-in rules are included that can be
+used in the initialization of the `PricingRules` process:
 
 ```elixir
     PricingRules.start_link(%{
@@ -89,10 +89,10 @@ calculating the totals.
 
 ## Future Improvements
 
-- Right now products are stored in an Agent that stores products list as it's
+- Right now products are stored in an `Agent` that stores products list as it's
   internal state. In a real system these would be held as a table in a database and accessed that way.
 
-- Product prices should ideally be represented using Decimal library to better
+- Product prices should ideally be represented using `Decimal` library to better
   accuracy in calculations as calculation using float for currencies may introduce
   rounding off errors.
 
