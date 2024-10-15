@@ -45,6 +45,13 @@ defmodule Store.PricingRule.BulkTest do
 
       assert item[:discount] == nil
     end
+
+    test "ignores items if product is different from rule", %{item: item, rule_opts: rule_opts} do
+      product = %Product{code: "foo", name: "FOO", price: D.new("2.0")}
+      resulting_item = Rule.apply(%{item | product: product}, rule_opts)
+
+      assert resulting_item[:discount] == nil
+    end
   end
 
   describe "Fraction discount price Bulk Pricing Rule" do
@@ -88,6 +95,13 @@ defmodule Store.PricingRule.BulkTest do
       item = Rule.apply(fewer_item, rule_opts)
 
       assert item[:discount] == nil
+    end
+
+    test "ignores items if product is different from rule", %{item: item, rule_opts: rule_opts} do
+      product = %Product{code: "foo", name: "FOO", price: D.new("2.0")}
+      resulting_item = Rule.apply(%{item | product: product}, rule_opts)
+
+      assert resulting_item[:discount] == nil
     end
   end
 end
