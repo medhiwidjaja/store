@@ -14,7 +14,7 @@ defmodule Store.PricingRule.BuyXGetYFreeTest do
     end
 
     test "applies buy one get one discount", %{item: item, rule_opts: rule_opts} do
-      expected_total = D.new("4.0")
+      expected_total = D.new("4.00")
 
       %{discounted_total: total} = Rule.apply(item, rule_opts)
 

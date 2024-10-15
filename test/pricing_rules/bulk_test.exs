@@ -23,7 +23,7 @@ defmodule Store.PricingRule.BulkTest do
 
     test "applies discount price on bulk order", %{item: item, rule_opts: rule_opts} do
       # Expected total = 1.5 * 4 = 6.0
-      expected_total = D.new("6")
+      expected_total = D.new("6.00")
 
       %{discounted_total: total} = Rule.apply(item, rule_opts)
 
@@ -73,7 +73,7 @@ defmodule Store.PricingRule.BulkTest do
 
     test "applies discount price on bulk order", %{item: item, rule_opts: rule_opts} do
       # Expected total = 6.0 * (2/3) * 4 = 16.0
-      expected_total = D.new("16")
+      expected_total = D.new("16.00")
 
       %{discounted_total: total} = Rule.apply(item, rule_opts)
 
