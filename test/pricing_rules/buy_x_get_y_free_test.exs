@@ -11,7 +11,7 @@ defmodule Store.PricingRule.BuyXGetYFreeTest do
       {:ok, %{product: product}}
     end
 
-    test "applies buy one get one discount on bulk order", %{product: product} do
+    test "applies buy one get one discount", %{product: product} do
       qty = 4
       expected_total = D.new("4.0")
       %{discounted_total: total} = Rule.apply(product, qty, min_qty: 1, free_qty: 1)
