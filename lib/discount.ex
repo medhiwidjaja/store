@@ -10,7 +10,7 @@ defmodule Store.Discount do
   alias Store.{Cart, PricingRule}
 
   @enforce_keys [:type, :parameters]
-  defstruct [:type, :parameters]
+  defstruct [:name, :type, :parameters]
 
   @typedoc """
   A Discount promotion
@@ -19,6 +19,7 @@ defmodule Store.Discount do
   parameters - the parameters of the PricingRule
   """
   @type t :: %__MODULE__{
+          name: String.t(),
           type: atom(),
           parameters: map()
         }
@@ -28,12 +29,12 @@ defmodule Store.Discount do
 
   ## Examples
 
-      iex> Store.Discount.new(Store.PricingRule.Bulk, %{})
-      %Store.Discount{type: Store.PricingRule.Bulk, parameters: %{}}
+      iex> Store.Discount.new("foo", Store.PricingRule.Bulk, %{})
+      %Store.Discount{name: "foo", type: Store.PricingRule.Bulk, parameters: %{}}
   """
-  @spec new(atom(), map()) :: t()
-  def new(type, parameters),
-    do: %__MODULE__{type: type, parameters: parameters}
+  @spec new(String.t(), atom(), map()) :: t()
+  def new(name, type, parameters),
+    do: %__MODULE__{name: name, type: type, parameters: parameters}
 
   @doc """
   Applies a Store.Discount to a Store.Cart
@@ -44,7 +45,7 @@ defmodule Store.Discount do
       iex> cart = Store.Cart.new()
       ...>   |> Store.Cart.add(tea)
       ...>   |> Store.Cart.add(tea)
-      iex> discount = Store.Discount.new(Store.PricingRule.BuyXGetYFree, %{name: "B1G1", code: "GR1", x: 1, y: 1})
+      iex> discount = Store.Discount.new("B1G1", Store.PricingRule.BuyXGetYFree, %{name: "B1G1", code: "GR1", x: 1, y: 1})
       iex> Store.Discount.apply(cart, discount)
       %Store.Cart{
         items: [

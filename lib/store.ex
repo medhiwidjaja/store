@@ -5,6 +5,7 @@ defmodule Store do
   def start(_type, _args) do
     initialize_ets_tables()
     Store.Products.load()
+    Store.Discounts.load()
 
     children = [
       {Registry, keys: :unique, name: Store.Registry},

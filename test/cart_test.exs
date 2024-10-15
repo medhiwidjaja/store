@@ -122,7 +122,7 @@ defmodule Store.CartTest do
       cart = Cart.new() |> Cart.add(tea) |> Cart.add(tea) |> Cart.add(coffee)
 
       discount =
-        Store.Discount.new(Store.PricingRule.BuyXGetYFree, %{
+        Store.Discount.new("B1G1", Store.PricingRule.BuyXGetYFree, %{
           name: "B1G1",
           code: "tea",
           x: 1,
@@ -133,13 +133,13 @@ defmodule Store.CartTest do
     end
 
     test "calculates the total of items in the cart", %{cart: cart} do
-      assert Cart.total(cart) == Decimal.new("7")
+      assert Decimal.eq?(Cart.total(cart), Decimal.new("7.00"))
     end
 
     test "calculates the total with a discount applied", %{cart: cart, discount: discount} do
       cart = Store.Discount.apply(cart, discount)
 
-      assert Cart.total(cart) == Decimal.new("5")
+      assert Decimal.eq?(Cart.total(cart), Decimal.new("5.00"))
     end
   end
 end
