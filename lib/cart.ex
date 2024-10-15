@@ -4,7 +4,7 @@ defmodule Store.Cart do
 
   A Cart represents a list of the products that clients bring to the checkout line
   """
-  alias Store.{Product}
+  alias Store.Product
   alias Decimal, as: D
 
   @type item() :: %{
@@ -37,7 +37,6 @@ defmodule Store.Cart do
   @doc """
   Adds a product to the cart given the product code.
 
-  It gets the product using the lookup function from the Product context.
   Ignores when product code doesn't exist.
 
   It also updates the cart line items quantity, and calculates the line_total
@@ -60,4 +59,44 @@ defmodule Store.Cart do
 
     %__MODULE__{cart | items: updated_items}
   end
+
+  @doc """
+  Updates the cart line items quantity, and calculates the line_total, and
+  removes the product from the cart when the quantity reaches zero
+  """
+  @spec remove(t(), Product.t()) :: t()
+  def remove(cart, nil), do: cart
+
+  def remove(%__MODULE__{items: items} = cart, %Product{code: code, price: price}) do
+    updated_items =
+      case Map.get(cart.items, code) do
+        nil ->
+          items
+
+        %{qty: 1} ->
+          Map.delete(cart.items, code)
+
+        _ ->
+          cart.items
+          |> Map.update!(code, fn item ->
+            updated_qty = (item[:qty] - 1) |> D.new()
+
+            item
+            |> Map.update!(:qty, &(&1 - 1))
+            |> Map.update!(:line_total, fn _ -> D.mult(price, updated_qty) end)
+          end)
+      end
+
+    %__MODULE__{cart | items: updated_items}
+  end
+
+  def total(cart) do
+    cart.items
+    |> Enum.reduce(Decimal.new(0), fn {_, item}, acc ->
+      Decimal.add(acc, get_price(item))
+    end)
+  end
+
+  defp get_price(%{discounted_total: total}) when not is_nil(total), do: total
+  defp get_price(%{line_total: total}), do: total
 end
