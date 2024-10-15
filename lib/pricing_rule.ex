@@ -6,8 +6,8 @@ defmodule Store.PricingRule do
   """
 
   @doc """
-  Apply discount on products
+  Apply discount on a cart item
   """
-  @callback apply(product :: Store.Product.t(), qty :: integer(), opts :: Keyword.t()) ::
+  @callback apply(item :: Store.Cart.item(), params :: map()) ::
               Store.Cart.item()
 end

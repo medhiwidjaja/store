@@ -8,53 +8,40 @@ defmodule Store.PricingRule.BulkTest do
   describe "Fixed price Bulk Pricing Rule" do
     setup do
       strawberry = %Product{code: "strawberry", name: "Strawberry", price: D.new("2.0")}
-      {:ok, %{product: strawberry}}
+      item = %{product: strawberry, qty: 4}
+
+      rule_opts = %{
+        name: "Promo1",
+        type: "fixed",
+        code: "strawberry",
+        min_qty: 3,
+        price: D.new("1.5")
+      }
+
+      {:ok, %{item: item, rule_opts: rule_opts}}
     end
 
-    test "applies discount price on bulk order", %{product: product} do
-      qty = 4
-      discounted_price = D.new("1.5")
+    test "applies discount price on bulk order", %{item: item, rule_opts: rule_opts} do
       # Expected total = 1.5 * 4 = 6.0
       expected_total = D.new("6")
 
-      %{discounted_total: total} =
-        Rule.apply(product, qty,
-          name: "Promo1",
-          type: "fixed",
-          min_qty: 3,
-          price: discounted_price
-        )
+      %{discounted_total: total} = Rule.apply(item, rule_opts)
 
       assert D.eq?(total, expected_total)
     end
 
-    test "adds discount info in line item", %{product: product} do
-      qty = 4
-      discounted_price = D.new("1.5")
+    test "adds discount info in line item", %{item: item, rule_opts: rule_opts} do
       expected_discount = D.new("2.0")
 
-      item =
-        Rule.apply(product, qty,
-          name: "Promo1",
-          type: "fixed",
-          min_qty: 3,
-          price: discounted_price
-        )
+      item = Rule.apply(item, rule_opts)
 
       assert [type: "Promo1 discount", amount: expected_discount] == item[:discount]
     end
 
-    test "doesn't apply rule if qty doesn't meet minimum", %{product: product} do
-      qty = 2
-      discounted_price = D.new("1.5")
+    test "doesn't apply rule if qty doesn't meet minimum", %{item: item, rule_opts: rule_opts} do
+      fewer_item = %{item | qty: 1}
 
-      item =
-        Rule.apply(product, qty,
-          name: "Promo1",
-          type: "fixed",
-          min_qty: 3,
-          price: discounted_price
-        )
+      item = Rule.apply(fewer_item, rule_opts)
 
       assert item[:discount] == nil
     end
@@ -63,60 +50,42 @@ defmodule Store.PricingRule.BulkTest do
   describe "Fraction discount price Bulk Pricing Rule" do
     setup do
       coffee = %Product{code: "coffee", name: "Coffee", price: D.new("6.0")}
-      {:ok, %{product: coffee}}
+      item = %{product: coffee, qty: 4}
+
+      rule_opts = %{
+        name: "Promo2",
+        type: "fraction",
+        code: "coffee",
+        min_qty: 3,
+        numerator: 2,
+        denominator: 3
+      }
+
+      {:ok, %{item: item, rule_opts: rule_opts}}
     end
 
-    test "applies discount price on bulk order", %{product: product} do
-      qty = 4
-      numerator = 2
-      denominator = 3
+    test "applies discount price on bulk order", %{item: item, rule_opts: rule_opts} do
       # Expected total = 6.0 * (2/3) * 4 = 16.0
       expected_total = D.new("16")
 
-      %{discounted_total: total} =
-        Rule.apply(product, qty,
-          name: "Promo2",
-          type: "fraction",
-          min_qty: 3,
-          numerator: numerator,
-          denominator: denominator
-        )
+      %{discounted_total: total} = Rule.apply(item, rule_opts)
 
       assert D.eq?(total, expected_total)
     end
 
-    test "adds discount info in line item", %{product: product} do
-      qty = 4
-      numerator = 2
-      denominator = 3
+    test "adds discount info in line item", %{item: item, rule_opts: rule_opts} do
       # Original total 24.0 minus Discounted total 16.0
       expected_discount = D.new("8.0")
 
-      item =
-        Rule.apply(product, qty,
-          name: "Promo2",
-          type: "fraction",
-          min_qty: 3,
-          numerator: numerator,
-          denominator: denominator
-        )
+      item = Rule.apply(item, rule_opts)
 
       assert D.eq?(expected_discount, item[:discount][:amount])
     end
 
-    test "doesn't apply rule if qty doesn't meet minimum", %{product: product} do
-      qty = 1
-      numerator = 2
-      denominator = 3
+    test "doesn't apply rule if qty doesn't meet minimum", %{item: item, rule_opts: rule_opts} do
+      fewer_item = %{item | qty: 1}
 
-      item =
-        Rule.apply(product, qty,
-          name: "Promo2",
-          type: "fraction",
-          min_qty: 3,
-          numerator: numerator,
-          denominator: denominator
-        )
+      item = Rule.apply(fewer_item, rule_opts)
 
       assert item[:discount] == nil
     end

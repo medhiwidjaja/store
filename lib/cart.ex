@@ -42,7 +42,7 @@ defmodule Store.Cart do
 
   It also updates the cart line items quantity, and calculates the line_total
   """
-  @spec add(t(), String.t()) :: t()
+  @spec add(t(), Product.t()) :: t()
   def add(cart, nil), do: cart
 
   def add(cart, product) do
