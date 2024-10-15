@@ -14,8 +14,7 @@ defmodule Store.MixProject do
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.post": :test,
-        "coveralls.html": :test,
-        "coveralls.cobertura": :test
+        "coveralls.html": :test
       ]
     ]
   end
