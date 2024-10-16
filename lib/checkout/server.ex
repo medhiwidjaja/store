@@ -25,6 +25,10 @@ defmodule Store.Checkout.Server do
     GenServer.call(via_tuple(name), {:add, code})
   end
 
+  def remove(name, code) do
+    GenServer.call(via_tuple(name), {:remove, code})
+  end
+
   def apply_discount(name) do
     GenServer.call(via_tuple(name), :apply_discount)
   end
@@ -46,15 +50,20 @@ defmodule Store.Checkout.Server do
     {:reply, :ok, [code |> add_one(cart)]}
   end
 
+  def handle_call({:remove, code}, _from, state) do
+    [cart] = state
+    {:reply, :ok, [code |> remove_one(cart)]}
+  end
+
   @impl true
   def handle_call(:apply_discount, _from, state) do
     [cart] = state
 
     items =
       cart.items
-      |> Enum.map(fn {code, item} ->
+      |> Enum.reduce(%{}, fn {code, item}, acc ->
         %{type: type, parameters: params} = Discounts.lookup(code)
-        {code, PricingRule.apply(type, item, params)}
+        Map.put(acc, code, PricingRule.apply(type, item, params))
       end)
 
     {:reply, :ok, [%Cart{cart | items: items}]}
@@ -71,15 +80,20 @@ defmodule Store.Checkout.Server do
   defp add_one(code, cart) do
     case Products.lookup(code) do
       nil ->
-        [cart]
+        cart
 
       product ->
-        cart
-        |> Cart.add(product)
+        Cart.add(cart, product)
     end
   end
 
-  # defp format_pound(num) do
-  #   "£#{:io_lib.format("~.2f", [num])}"
-  # end
+  defp remove_one(code, cart) do
+    case Products.lookup(code) do
+      nil ->
+        cart
+
+      product ->
+        Cart.remove(cart, product)
+    end
+  end
 end
