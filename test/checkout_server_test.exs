@@ -68,6 +68,7 @@ defmodule Store.Checkout.ServerTest do
       Server.apply_discount(@checkout_line)
       a = Server.total(@checkout_line)
 
+      # Start another checkout line process
       start_checkout_server(:no2, "line 2")
 
       ~w{SR1 GR1 CF1 GR1 GR1}
